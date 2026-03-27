@@ -1,593 +1,999 @@
 <!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin">
-    <meta http-equiv="Cross-Origin-Embedder-Policy" content="require-corp">
-    <title>Video Generator - Pexels API</title>
-    <link rel="icon" href="data:,">
-    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/umd/ffmpeg.min.js"></script>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MoneyPrinter Shorts</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💸</text></svg>"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', sans-serif; background: #0f0f1a; color: #fff; min-height: 100vh; padding: 20px; }
-        .container { max-width: 1200px; margin: 0 auto; }
-        h1 { text-align: center; margin-bottom: 30px; color: #00d4ff; }
-        .api-key-section { background: #1a1a2e; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
-        .api-key-section input { width: 70%; padding: 10px; border: none; border-radius: 5px; background: #16213e; color: #fff; }
-        .api-key-section button { padding: 10px 20px; background: #00d4ff; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        .segments-container { background: #1a1a2e; padding: 20px; border-radius: 10px; }
-        .segment { display: flex; gap: 10px; padding: 10px; background: #16213e; margin-bottom: 10px; border-radius: 5px; align-items: center; }
-        .segment-num { width: 30px; text-align: center; font-weight: bold; color: #00d4ff; }
-        .segment-time { width: 120px; font-family: monospace; }
-        .segment-query { flex: 1; }
-        .segment-status { width: 150px; text-align: center; }
-        .status-searching { color: #ffa500; }
-        .status-downloading { color: #00d4ff; }
-        .status-ready { color: #00ff00; }
-        .status-error { color: #ff4444; }
-        .controls { display: flex; gap: 10px; margin-top: 20px; }
-        .btn { padding: 12px 24px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 14px; }
-        .btn-primary { background: #00d4ff; color: #000; }
-        .btn-success { background: #00ff00; color: #000; }
-        .btn-danger { background: #ff4444; color: #fff; }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        .progress-container { margin-top: 20px; }
-        .progress-bar { width: 100%; height: 30px; background: #16213e; border-radius: 5px; overflow: hidden; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, #00d4ff, #00ff00); width: 0%; transition: width 0.3s; }
-        .progress-text { text-align: center; margin-top: 10px; }
-        .log-container { background: #0a0a15; padding: 15px; border-radius: 5px; margin-top: 20px; max-height: 300px; overflow-y: auto; font-family: monospace; font-size: 12px; }
-        .log-entry { margin-bottom: 5px; }
-        .log-info { color: #00d4ff; }
-        .log-success { color: #00ff00; }
-        .log-error { color: #ff4444; }
-        .log-warning { color: #ffa500; }
-        .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; }
-        .stat-box { background: #16213e; padding: 15px; border-radius: 5px; text-align: center; }
-        .stat-value { font-size: 24px; font-weight: bold; color: #00d4ff; }
-        .stat-label { font-size: 12px; color: #888; }
-        .video-preview { margin-top: 20px; }
-        .video-preview video { width: 100%; max-width: 800px; display: block; margin: 0 auto; border-radius: 10px; }
-        .error-details { background: #2a1a1a; padding: 10px; border-radius: 5px; margin-top: 10px; font-size: 12px; }
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --bg: #f6f5f0;
+        --card: #ffffff;
+        --input-bg: #f2f1ec;
+        --input-bg-focus: #ffffff;
+        --border: #e5e3dc;
+        --border-focus: #16a34a;
+        --text: #1c1917;
+        --text-2: #57534e;
+        --text-3: #a8a29e;
+        --accent: #16a34a;
+        --accent-hover: #15803d;
+        --accent-light: rgba(22, 163, 74, 0.07);
+        --accent-ring: rgba(22, 163, 74, 0.12);
+        --danger: #dc2626;
+        --danger-light: rgba(220, 38, 38, 0.06);
+        --radius: 10px;
+        --radius-lg: 20px;
+        --shadow-sm: 0 1px 2px rgba(28, 25, 23, 0.03),
+          0 2px 8px rgba(28, 25, 23, 0.04);
+        --shadow: 0 1px 3px rgba(28, 25, 23, 0.03),
+          0 6px 24px rgba(28, 25, 23, 0.06);
+        --shadow-lg: 0 2px 4px rgba(28, 25, 23, 0.02),
+          0 12px 40px rgba(28, 25, 23, 0.08);
+        --font-display: "Fraunces", serif;
+        --font-body: "Plus Jakarta Sans", sans-serif;
+      }
+
+      html {
+        font-size: 16px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      body {
+        font-family: var(--font-body);
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        line-height: 1.55;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--bg);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #d6d3cd;
+      }
+
+      /* ===== LAYOUT ===== */
+      .container {
+        max-width: 660px;
+        margin: 0 auto;
+        padding: 72px 24px 48px;
+      }
+
+      /* ===== HEADER ===== */
+      .header {
+        text-align: center;
+        margin-bottom: 36px;
+        animation: fadeUp 0.5s ease both;
+      }
+
+      .title {
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-size: clamp(2.2rem, 5.5vw, 3rem);
+        color: var(--text);
+        letter-spacing: -0.02em;
+        line-height: 1.15;
+      }
+
+      .title-emoji {
+        display: inline-block;
+        margin-left: 2px;
+        font-style: normal;
+      }
+
+      .subtitle {
+        font-size: 0.95rem;
+        font-weight: 400;
+        color: var(--text-2);
+        margin-top: 8px;
+      }
+
+      /* ===== CARD ===== */
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 32px;
+        box-shadow: var(--shadow);
+        animation: fadeUp 0.5s ease 0.08s both;
+      }
+
+      /* ===== FORM ELEMENTS ===== */
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--text-2);
+      }
+
+      .label-hint {
+        font-weight: 400;
+        color: var(--text-3);
+      }
+
+      .form-input,
+      .form-textarea,
+      .form-select {
+        width: 100%;
+        font-family: var(--font-body);
+        font-size: 0.9rem;
+        font-weight: 400;
+        color: var(--text);
+        background: var(--input-bg);
+        border: 1.5px solid transparent;
+        border-radius: var(--radius);
+        padding: 10px 13px;
+        outline: none;
+        transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+      }
+
+      .form-input:hover,
+      .form-textarea:hover,
+      .form-select:hover {
+        border-color: var(--border);
+      }
+
+      .form-input:focus,
+      .form-textarea:focus,
+      .form-select:focus {
+        background: var(--input-bg-focus);
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px var(--accent-ring);
+      }
+
+      .form-textarea {
+        resize: vertical;
+        min-height: 200px;
+        line-height: 1.55;
+      }
+
+      .form-select {
+        appearance: none;
+        -webkit-appearance: none;
+        cursor: pointer;
+        background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%2378716c' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        padding-right: 36px;
+      }
+
+      .form-select optgroup {
+        font-weight: 600;
+        color: var(--text-2);
+      }
+
+      .form-input::placeholder,
+      .form-textarea::placeholder {
+        color: var(--text-3);
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+
+      /* ===== COLOR DOT ===== */
+      .color-field {
+        position: relative;
+      }
+
+      .color-dot {
+        position: absolute;
+        top: 50%;
+        left: 13px;
+        transform: translateY(-50%);
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        border: 2px solid rgba(0, 0, 0, 0.06);
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      .color-field .form-select {
+        padding-left: 36px;
+      }
+
+      /* ===== DIVIDER ===== */
+      .divider {
+        height: 1px;
+        background: var(--border);
+        margin: 24px 0;
+      }
+
+      /* ===== ADVANCED TOGGLE ===== */
+      .advanced-toggle {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        padding: 0;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-family: var(--font-body);
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text-2);
+        transition: color 0.2s;
+      }
+
+      .advanced-toggle:hover {
+        color: var(--text);
+      }
+
+      .advanced-toggle.open {
+        color: var(--accent);
+      }
+
+      .chevron {
+        width: 14px;
+        height: 14px;
+        transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        flex-shrink: 0;
+      }
+
+      .advanced-toggle.open .chevron {
+        transform: rotate(180deg);
+      }
+
+      /* ===== ADVANCED PANEL ===== */
+      .advanced-panel {
+        display: grid;
+        grid-template-rows: 0fr;
+        transition: grid-template-rows 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      .advanced-panel.open {
+        grid-template-rows: 1fr;
+      }
+
+      .advanced-inner {
+        overflow: hidden;
+      }
+
+      .advanced-content {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        padding-top: 20px;
+      }
+
+      /* ===== TOGGLE SWITCHES ===== */
+      .toggles-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px 24px;
+        padding-top: 2px;
+      }
+
+      .toggle {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .toggle input {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+        pointer-events: none;
+      }
+
+      .toggle-track {
+        position: relative;
+        width: 36px;
+        height: 20px;
+        background: #d6d3cd;
+        border-radius: 10px;
+        flex-shrink: 0;
+        transition: background 0.25s;
+      }
+
+      .toggle-thumb {
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 16px;
+        height: 16px;
+        background: #fff;
+        border-radius: 50%;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+        transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      .toggle input:checked + .toggle-track {
+        background: var(--accent);
+      }
+
+      .toggle input:checked + .toggle-track .toggle-thumb {
+        transform: translateX(16px);
+      }
+
+      .toggle-text {
+        font-size: 0.84rem;
+        font-weight: 500;
+        color: var(--text-2);
+        transition: color 0.15s;
+      }
+
+      .toggle:hover .toggle-text {
+        color: var(--text);
+      }
+
+      /* ===== STATUS AREA ===== */
+      .status-area {
+        display: none;
+        flex-direction: column;
+        gap: 10px;
+        padding: 22px 18px 16px;
+        background: var(--accent-light);
+        border: 1px solid rgba(22, 163, 74, 0.12);
+        border-radius: var(--radius);
+        margin-top: 12px;
+      }
+
+      .status-area.active {
+        display: flex;
+      }
+
+      .progress-track {
+        width: 100%;
+        height: 3px;
+        background: rgba(22, 163, 74, 0.12);
+        border-radius: 2px;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        width: 30%;
+        background: var(--accent);
+        border-radius: 2px;
+        animation: indeterminate 1.6s ease-in-out infinite;
+      }
+
+      .status-text {
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: var(--accent);
+      }
+
+      /* ===== LOG VIEWER ===== */
+      .log-viewer {
+        display: none;
+        flex-direction: column;
+        margin-top: 10px;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid rgba(28, 25, 23, 0.08);
+      }
+
+      .log-viewer.active {
+        display: flex;
+      }
+
+      .log-viewer-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 12px;
+        background: #292524;
+        border-bottom: 1px solid #3f3a36;
+      }
+
+      .log-viewer-title {
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: #a8a29e;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .log-viewer-clear {
+        background: none;
+        border: none;
+        color: #78716c;
+        font-size: 1rem;
+        cursor: pointer;
+        padding: 0 4px;
+        line-height: 1;
+        transition: color 0.15s;
+      }
+
+      .log-viewer-clear:hover {
+        color: #d6d3cd;
+      }
+
+      .log-viewer-body {
+        background: #1c1917;
+        max-height: 240px;
+        overflow-y: auto;
+        padding: 10px 12px;
+        font-family: "SF Mono", "Cascadia Code", "Fira Code", "Consolas",
+          monospace;
+        font-size: 0.75rem;
+        line-height: 1.6;
+      }
+
+      .log-viewer-body::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .log-viewer-body::-webkit-scrollbar-track {
+        background: #1c1917;
+      }
+
+      .log-viewer-body::-webkit-scrollbar-thumb {
+        background: #3f3a36;
+        border-radius: 3px;
+      }
+
+      .log-viewer-body::-webkit-scrollbar-thumb:hover {
+        background: #57534e;
+      }
+
+      .log-entry {
+        display: flex;
+        gap: 8px;
+        padding: 1px 0;
+      }
+
+      .log-time {
+        color: #57534e;
+        flex-shrink: 0;
+      }
+
+      .log-msg {
+        color: #d6d3cd;
+        word-break: break-word;
+        white-space: pre-wrap;
+      }
+
+      .log-msg.log-success {
+        color: #4ade80;
+      }
+
+      .log-msg.log-error {
+        color: #f87171;
+      }
+
+      .log-msg.log-warning {
+        color: #facc15;
+      }
+
+      .log-msg.log-info {
+        color: #a8a29e;
+      }
+
+      /* ===== BUTTONS ===== */
+      .actions {
+        margin-top: 24px;
+      }
+
+      .btn {
+        width: 100%;
+        padding: 13px 24px;
+        font-family: var(--font-body);
+        font-size: 0.92rem;
+        font-weight: 700;
+        border: none;
+        border-radius: var(--radius);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+      }
+
+      .btn:active {
+        transform: scale(0.985);
+      }
+
+      .btn-generate {
+        background: var(--accent);
+        color: #fff;
+      }
+
+      .btn-generate:hover {
+        background: var(--accent-hover);
+        box-shadow: 0 4px 14px rgba(22, 163, 74, 0.2);
+      }
+
+      .btn-generate .btn-icon {
+        width: 17px;
+        height: 17px;
+      }
+
+      .btn-cancel {
+        background: var(--danger-light);
+        color: var(--danger);
+        border: 1px solid rgba(220, 38, 38, 0.12);
+        margin-top: 8px;
+      }
+
+      .btn-cancel:hover {
+        background: rgba(220, 38, 38, 0.1);
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      /* ===== FOOTER ===== */
+      .footer {
+        text-align: center;
+        padding: 36px 0 20px;
+        animation: fadeUp 0.5s ease 0.16s both;
+      }
+
+      .footer p {
+        font-size: 0.8rem;
+        color: var(--text-3);
+      }
+
+      .footer a {
+        color: var(--text-2);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.15s;
+      }
+
+      .footer a:hover {
+        color: var(--accent);
+      }
+
+      /* ===== TOASTS ===== */
+      .toast-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 99999;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        pointer-events: none;
+      }
+
+      .toast {
+        pointer-events: auto;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 13px 16px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: var(--text);
+        max-width: 380px;
+        box-shadow: var(--shadow-lg);
+        transform: translateX(120%);
+        opacity: 0;
+        transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+          opacity 0.3s ease;
+      }
+
+      .toast.show {
+        transform: translateX(0);
+        opacity: 1;
+      }
+
+      .toast-success {
+        border-left: 3px solid var(--accent);
+      }
+
+      .toast-error {
+        border-left: 3px solid var(--danger);
+      }
+
+      .toast-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        background: var(--text-3);
+      }
+
+      .toast-success .toast-dot {
+        background: var(--accent);
+      }
+
+      .toast-error .toast-dot {
+        background: var(--danger);
+      }
+
+      .toast-msg {
+        flex: 1;
+        line-height: 1.4;
+      }
+
+      .toast-close {
+        background: none;
+        border: none;
+        color: var(--text-3);
+        cursor: pointer;
+        padding: 2px;
+        font-size: 1.1rem;
+        line-height: 1;
+        transition: color 0.15s;
+        flex-shrink: 0;
+      }
+
+      .toast-close:hover {
+        color: var(--text);
+      }
+
+      /* ===== ANIMATIONS ===== */
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes indeterminate {
+        0% {
+          transform: translateX(-100%);
+        }
+        100% {
+          transform: translateX(430%);
+        }
+      }
+
+      /* ===== RESPONSIVE ===== */
+      @media (max-width: 600px) {
+        .container {
+          padding: 40px 16px 32px;
+        }
+
+        .card {
+          padding: 22px 18px;
+          border-radius: 16px;
+        }
+
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .toggles-row {
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .toast-container {
+          left: 12px;
+          right: 12px;
+        }
+
+        .toast {
+          max-width: 100%;
+        }
+      }
     </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Video Generator - Pexels API</h1>
-        
-        <div class="api-key-section">
-            <h3>Pexels API Key:</h3>
-            <input type="text" id="apiKey" placeholder="Masukkan Pexels API Key Anda">
-            <button onclick="saveApiKey()">Simpan</button>
-            <span id="apiKeyStatus" style="margin-left: 10px; color: #00ff00;"></span>
-        </div>
+  </head>
 
-        <div class="controls">
-            <button class="btn btn-primary" onclick="startGeneration()">Mulai Generate Video</button>
-            <button class="btn btn-danger" onclick="resetAll()">Reset Semua</button>
-        </div>
+  <body>
+    <main class="container">
+      <header class="header">
+        <h1 class="title">
+          MoneyPrinter<span class="title-emoji"> 📱</span>
+        </h1>
+        <p class="subtitle">Automate YouTube Shorts with AI</p>
+      </header>
 
-        <div class="stats">
-            <div class="stat-box">
-                <div class="stat-value" id="totalSegments">41</div>
-                <div class="stat-label">Total Segmen</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-value" id="readySegments">0</div>
-                <div class="stat-label">Siap</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-value" id="processingSegments">0</div>
-                <div class="stat-label">Diproses</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-value" id="errorSegments">0</div>
-                <div class="stat-label">Error</div>
-            </div>
-        </div>
-
-        <div class="progress-container">
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill"></div>
-            </div>
-            <div class="progress-text" id="progressText">Menunggu...</div>
-        </div>
-
-        <div class="segments-container" id="segmentsContainer"></div>
-
-        <div class="log-container" id="logContainer"></div>
-
-        <div class="video-preview" id="videoPreview" style="display: none;">
-            <h3>Video Hasil:</h3>
-            <video id="outputVideo" controls></video>
-            <a id="downloadLink" class="btn btn-success" style="display: inline-block; margin-top: 10px;" download>Download Video</a>
-        </div>
-    </div>
-
-    <script>
-        // For version 0.11.x, access via window.FFmpeg
-        const FFmpeg = window.FFmpeg;
-        
-        // Check if FFmpeg is loaded
-        console.log('FFmpeg loaded:', typeof FFmpeg);
-
-        const fetchFile = async (file) => {
-            if (file instanceof Blob || file instanceof File) {
-                return new Uint8Array(await file.arrayBuffer());
-            }
-            return file;
-        };
-
-        let ffmpeg = null;
-        let apiKey = localStorage.getItem('pexelsApiKey') || '';
-        let segments = [];
-        let isProcessing = false;
-
-        // Parse format dari audio.html
-        const rawData = `1	00:00–00:08	welcome intro dark background
+      <div class="card">
+        <!-- Script Input -->
+        <div class="form-group">
+          <label for="videoScript" class="label">Video Script</label>
+          <textarea
+            id="videoScript"
+            name="videoScript"
+            class="form-textarea"
+            rows="10"
+            placeholder="Paste your script here in the format:
+# Timestamp	Pexels Search Query
+1	00:00–00:08	welcome intro dark background
 2	00:08–00:25	two office buildings corporate
-3	00:25–00:50	customers queue store excited / empty store sale discount
-4	00:50–01:15	business book reading desk
-5	01:15–01:40	leader inspiring team meeting
-6	01:40–02:00	vintage airplane flying / retro computer technology
-7	02:00–02:15	human brain neurons science
-8	02:15–02:55	car factory assembly line workers
-9	02:55–03:15	engineer blueprint design precision
-10	03:15–03:40	price tag discount retail store
-11	03:40–03:55	car dealership showroom promotion
-12	03:55–04:25	confused person reading document frustrated
-13	04:25–04:50	fear anxiety worried person dark
-14	04:50–05:15	old mobile phone flip phone technology
-15	05:15–05:35	supermarket shelf too many choices confused
-16	05:35–05:55	stock market chart rise fall crash
-17	05:55–06:25	customer shopping bargain / loyal customer brand love
-18	06:25–07:00	concentric circles diagram whiteboard
-19	07:00–07:30	brain scan neural activity neuroscience
-20	07:30–07:55	couple falling in love connection
-21	07:55–08:35	awkward date restaurant / genuine conversation cafe date
-22	08:35–09:10	apple store products technology modern
-23	09:10–09:25	apple products iphone macbook technology
-24	09:25–10:10	wright brothers airplane vintage aviation
-25	10:10–10:35	team resilience failure to success motivation
-26	10:35–10:55	person walking away giving up disappointed
-27	10:55–11:30	old mp3 player retro music / person listening music earphones happy
-28	11:30–12:10	antarctica ice expedition extreme
-29	12:10–12:30	survival teamwork extreme conditions ice
-30	12:30–13:05	flight attendant cheerful airplane cabin happy
-31	13:05–13:25	airport ground crew airplane turnaround fast
-32	13:25–13:55	open door office inclusive leadership handshake
-33	13:55–14:20	military fighter jet pilot
-34	14:20–14:55	construction worker laying bricks / grand cathedral architecture
-35	14:55–15:20	team brainstorming creative innovation collaboration
-36	15:20–15:50	community loyalty support together
-37	15:50–16:10	mirror reflection authentic self identity
-38	16:10–16:35	confident presentation audience speaking
-39	16:35–17:10	remote control tv pause screen living room
-40	17:10–17:35	small group early adopters technology
-41	17:35–18:00	person watching sunset thinking reflection / seed growing plant timelapse`;
+..."
+          ></textarea>
+        </div>
 
-        function parseTimestamp(ts) {
-            const [start, end] = ts.split('–');
-            const parseTime = (t) => {
-                const [min, sec] = t.split(':').map(Number);
-                return min * 60 + sec;
-            };
-            return { start: parseTime(start), end: parseTime(end), duration: parseTime(end) - parseTime(start) };
-        }
+        <div class="divider"></div>
 
-        function parseData() {
-            segments = rawData.split('\n').map(line => {
-                const parts = line.trim().split('\t');
-                if (parts.length < 3) return null;
-                const num = parseInt(parts[0]);
-                const timestamp = parseTimestamp(parts[1]);
-                const query = parts[2];
-                return {
-                    num,
-                    ...timestamp,
-                    query,
-                    status: 'pending',
-                    videoUrl: null,
-                    videoFile: null,
-                    duration: timestamp.duration,
-                    error: null
-                };
-            }).filter(s => s !== null);
-            
-            document.getElementById('totalSegments').textContent = segments.length;
-            renderSegments();
-        }
+        <!-- Advanced Options Toggle -->
+        <button
+          type="button"
+          id="advancedOptionsToggle"
+          class="advanced-toggle"
+        >
+          <svg
+            class="chevron"
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M4 6l4 4 4-4" />
+          </svg>
+          <span>Advanced Options</span>
+        </button>
 
-        function renderSegments() {
-            const container = document.getElementById('segmentsContainer');
-            container.innerHTML = segments.map((s, i) => `
-                <div class="segment" id="segment-${i}">
-                    <div class="segment-num">${s.num}</div>
-                    <div class="segment-time">${formatTime(s.start)}–${formatTime(s.end)}</div>
-                    <div class="segment-query">${s.query}</div>
-                    <div class="segment-status" id="status-${i}">${getStatusHtml(s.status)}</div>
+        <!-- Advanced Panel -->
+        <div id="advancedOptions" class="advanced-panel">
+          <div class="advanced-inner">
+            <div class="advanced-content">
+              <!-- AI Model + Voice -->
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="aiModel" class="label">Ollama Model</label>
+                  <select id="aiModel" name="aiModel" class="form-select">
+                    <option value="">Loading Ollama models...</option>
+                  </select>
                 </div>
-            `).join('');
-        }
 
-        function formatTime(seconds) {
-            const m = Math.floor(seconds / 60);
-            const s = seconds % 60;
-            return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-        }
+                <div class="form-group">
+                  <label for="voice" class="label">Voice</label>
+                  <select id="voice" name="voice" class="form-select">
+                    <optgroup label="Character">
+                      <option value="en_us_ghostface">Ghost Face</option>
+                      <option value="en_us_chewbacca">Chewbacca</option>
+                      <option value="en_us_c3po">C3PO</option>
+                      <option value="en_us_stitch">Stitch</option>
+                      <option value="en_us_stormtrooper">Stormtrooper</option>
+                      <option value="en_us_rocket">Rocket</option>
+                    </optgroup>
+                    <optgroup label="English (AU)">
+                      <option value="en_au_001">Female</option>
+                      <option value="en_au_002">Male</option>
+                    </optgroup>
+                    <optgroup label="English (UK)">
+                      <option value="en_uk_001">Male 1</option>
+                      <option value="en_uk_003">Male 2</option>
+                    </optgroup>
+                    <optgroup label="English (US)">
+                      <option value="en_us_001">Female 1</option>
+                      <option value="en_us_002">Female 2</option>
+                      <option value="en_us_006">Male 1</option>
+                      <option value="en_us_007">Male 2</option>
+                      <option value="en_us_009">Male 3</option>
+                      <option value="en_us_010">Male 4</option>
+                    </optgroup>
+                    <optgroup label="French">
+                      <option value="fr_001">Male 1</option>
+                      <option value="fr_002">Male 2</option>
+                    </optgroup>
+                    <optgroup label="German">
+                      <option value="de_001">Female</option>
+                      <option value="de_002">Male</option>
+                    </optgroup>
+                    <optgroup label="Spanish">
+                      <option value="es_002">Male</option>
+                      <option value="es_mx_002">Mexican Male</option>
+                    </optgroup>
+                    <optgroup label="Portuguese (BR)">
+                      <option value="br_001">Female 1</option>
+                      <option value="br_003">Female 2</option>
+                      <option value="br_004">Female 3</option>
+                      <option value="br_005">Male</option>
+                    </optgroup>
+                    <optgroup label="Indonesian">
+                      <option value="id_001">Female</option>
+                    </optgroup>
+                    <optgroup label="Japanese">
+                      <option value="jp_001">Female 1</option>
+                      <option value="jp_003">Female 2</option>
+                      <option value="jp_005">Female 3</option>
+                      <option value="jp_006">Male</option>
+                    </optgroup>
+                    <optgroup label="Korean">
+                      <option value="kr_002">Male 1</option>
+                      <option value="kr_003">Female</option>
+                      <option value="kr_004">Male 2</option>
+                    </optgroup>
+                    <optgroup label="Singing">
+                      <option value="en_female_f08_salut_damour">Alto</option>
+                      <option value="en_male_m03_lobby">Tenor</option>
+                      <option value="en_female_f08_warmy_breeze">
+                        Warmy Breeze
+                      </option>
+                      <option value="en_male_m03_sunshine_soon">
+                        Sunshine Soon
+                      </option>
+                    </optgroup>
+                    <optgroup label="Effects">
+                      <option value="en_male_narration">Narrator</option>
+                      <option value="en_male_funny">Wacky</option>
+                      <option value="en_female_emotional">Peaceful</option>
+                    </optgroup>
+                  </select>
+                </div>
+              </div>
 
-        function getStatusHtml(status) {
-            switch(status) {
-                case 'pending': return '<span class="status-pending">⏳ Menunggu</span>';
-                case 'searching': return '<span class="status-searching">🔍 Mencari...</span>';
-                case 'downloading': return '<span class="status-downloading">⬇️ Download...</span>';
-                case 'processing': return '<span class="status-downloading">✂️ Memroses...</span>';
-                case 'ready': return '<span class="status-ready">✓ Siap</span>';
-                case 'error': return '<span class="status-error">✗ Error</span>';
-                default: return status;
-            }
-        }
+              <!-- Subtitles Position + Color -->
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="subtitlesPosition" class="label"
+                    >Subtitles Position</label
+                  >
+                  <select
+                    id="subtitlesPosition"
+                    name="subtitlesPosition"
+                    class="form-select"
+                  >
+                    <option value="center,top">Center &middot; Top</option>
+                    <option value="center,bottom">
+                      Center &middot; Bottom
+                    </option>
+                    <option value="center,center">
+                      Center &middot; Center
+                    </option>
+                    <option value="left,center">Left &middot; Center</option>
+                    <option value="left,bottom">Left &middot; Bottom</option>
+                    <option value="right,center">Right &middot; Center</option>
+                    <option value="right,bottom">Right &middot; Bottom</option>
+                  </select>
+                </div>
 
-        function updateSegmentStatus(index, status, error = null) {
-            segments[index].status = status;
-            if (error) segments[index].error = error;
-            
-            const statusEl = document.getElementById(`status-${index}`);
-            if (statusEl) statusEl.innerHTML = getStatusHtml(status);
-            
-            updateStats();
-        }
+                <div class="form-group">
+                  <label for="subtitlesColor" class="label"
+                    >Subtitle Color</label
+                  >
+                  <div class="color-field">
+                    <span class="color-dot" id="colorDot"></span>
+                    <select
+                      id="subtitlesColor"
+                      name="subtitlesColor"
+                      class="form-select"
+                    >
+                      <option value="#FFFF00">Yellow</option>
+                      <option value="#f4a261">Orange</option>
+                      <option value="#e63946">Red</option>
+                      <option value="#1d3557">Blue</option>
+                      <option value="#fff">White</option>
+                      <option value="#03071e">Black</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
 
-        function updateStats() {
-            const ready = segments.filter(s => s.status === 'ready').length;
-            const processing = segments.filter(s => ['searching', 'downloading', 'processing'].includes(s.status)).length;
-            const error = segments.filter(s => s.status === 'error').length;
-            
-            document.getElementById('readySegments').textContent = ready;
-            document.getElementById('processingSegments').textContent = processing;
-            document.getElementById('errorSegments').textContent = error;
-            
-            const progress = ((ready + error) / segments.length) * 100;
-            document.getElementById('progressFill').style.width = progress + '%';
-            document.getElementById('progressText').textContent = `${ready}/${segments.length} segmen siap`;
-        }
+              <!-- Threads -->
+              <div class="form-group">
+                <label for="threads" class="label">Threads</label>
+                <input
+                  type="number"
+                  id="threads"
+                  name="threads"
+                  class="form-input"
+                  value="2"
+                  min="1"
+                  max="100"
+                />
+              </div>
 
-        function log(message, type = 'info') {
-            const container = document.getElementById('logContainer');
-            const entry = document.createElement('div');
-            entry.className = `log-entry log-${type}`;
-            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
-            container.appendChild(entry);
-            container.scrollTop = container.scrollHeight;
-        }
+              <!-- Toggles -->
+              <div class="toggles-row">
+                <label class="toggle">
+                  <input
+                    type="checkbox"
+                    id="youtubeUploadToggle"
+                    name="youtubeUploadToggle"
+                  />
+                  <span class="toggle-track">
+                    <span class="toggle-thumb"></span>
+                  </span>
+                  <span class="toggle-text">Upload to YouTube</span>
+                </label>
 
-        function saveApiKey() {
-            const key = document.getElementById('apiKey').value.trim();
-            if (!key) {
-                alert('Masukkan API Key terlebih dahulu!');
-                return;
-            }
-            apiKey = key;
-            localStorage.setItem('pexelsApiKey', key);
-            document.getElementById('apiKeyStatus').textContent = '✓ Tersimpan';
-            log('API Key disimpan', 'success');
-        }
+                <label class="toggle">
+                  <input
+                    type="checkbox"
+                    id="useMusicToggle"
+                    name="useMusicToggle"
+                  />
+                  <span class="toggle-track">
+                    <span class="toggle-thumb"></span>
+                  </span>
+                  <span class="toggle-text">Use Music</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
 
-        async function initFFmpeg() {
-            if (ffmpeg) return;
-            
-            // Check for SharedArrayBuffer support (required for FFmpeg WASM)
-            if (typeof SharedArrayBuffer === 'undefined') {
-                log('SharedArrayBuffer tidak tersedia - perlu server dengan COOP/COEP headers', 'error');
-                log('Coba gunakan Firefox atau setting server dengan Cross-Origin-Opener-Policy dan Cross-Origin-Embedder-Policy', 'warning');
-                throw new Error('SharedArrayBuffer not supported - need COOP/COEP headers on server');
-            }
-            
-            log('Menginisialisasi FFmpeg...', 'info');
-            ffmpeg = new FFmpeg();
-            
-            ffmpeg.on('log', ({ message }) => {
-                console.log('FFmpeg log:', message);
-                log(`FFmpeg: ${message}`, 'info');
-            });
-            
-            ffmpeg.on('progress', ({ progress }) => {
-                log(`FFmpeg progress: ${Math.round(progress * 100)}%`, 'info');
-            });
-            
-            try {
-                await ffmpeg.load({
-                    coreURL: 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.11.6/dist/umd/ffmpeg-core.js',
-                    wasmURL: 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.11.6/dist/umd/ffmpeg-core.wasm'
-                });
-                
-                log('FFmpeg siap digunakan', 'success');
-            } catch (err) {
-                log(`Error memuat FFmpeg: ${err.message}`, 'error');
-                throw err;
-            }
-        }
+        <!-- Status Area -->
+        <div class="status-area" id="statusArea">
+          <div class="progress-track">
+            <div class="progress-fill"></div>
+          </div>
+          <span class="status-text">Generating your video&hellip;</span>
+          <div class="log-viewer" id="logViewer">
+            <div class="log-viewer-header">
+              <span class="log-viewer-title">Live Output</span>
+              <button type="button" class="log-viewer-clear" id="logClearBtn">&times;</button>
+            </div>
+            <div class="log-viewer-body" id="logViewerBody"></div>
+          </div>
+        </div>
 
-        async function searchVideo(query) {
-            // Ambil semua query alternatif (dipisahkan dengan /)
-            const queries = query.split('/').map(q => q.trim());
-            
-            for (const q of queries) {
-                try {
-                    log(`Mencari: "${q}"`, 'info');
-                    
-                    const response = await fetch(`https://api.pexels.com/videos/search?query=${encodeURIComponent(q)}&per_page=5&orientation=landscape`, {
-                        headers: { 'Authorization': apiKey }
-                    });
-                    
-                    if (!response.ok) throw new Error(`API Error: ${response.status}`);
-                    
-                    const data = await response.json();
-                    
-                    if (data.videos && data.videos.length > 0) {
-                        // Cari video dengan durasi yang sesuai atau bisa dipotong
-                        const suitable = data.videos.find(v => v.duration >= 5);
-                        if (suitable) {
-                            log(`Ditemukan: "${q}" - ${suitable.id}`, 'success');
-                            return suitable;
-                        }
-                    }
-                    
-                    log(`Tidak ada video cocok untuk: "${q}"`, 'warning');
-                } catch (err) {
-                    log(`Error mencari "${q}": ${err.message}`, 'error');
-                }
-            }
-            
-            return null;
-        }
+        <!-- Actions -->
+        <div class="actions">
+          <button type="button" id="generateButton" class="btn btn-generate">
+            <svg class="btn-icon" viewBox="0 0 20 20" fill="currentColor">
+              <path
+                d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"
+              />
+            </svg>
+            Generate Shorts
+          </button>
+          <button
+            type="button"
+            id="cancelButton"
+            class="btn btn-cancel hidden"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
 
-        async function downloadVideo(video, targetDuration) {
-            try {
-                // Ambil video dengan kualitas terbaik yang tersedia
-                const videoFiles = video.video_files.sort((a, b) => b.height - a.height);
-                const bestFile = videoFiles[0];
-                
-                log(`Downloading: ${bestFile.link}`, 'info');
-                
-                // Menggunakan CORS proxy untuk melewati bloking Cross-Origin-Embedder-Policy (COEP) yang mem-block file dari CDN eksternal
-                const proxiedUrl = `https://corsproxy.io/?${encodeURIComponent(bestFile.link)}`;
-                const response = await fetch(proxiedUrl);
-                
-                if (!response.ok) throw new Error(`Download failed: ${response.status}`);
-                
-                const blob = await response.blob();
-                const arrayBuffer = await blob.arrayBuffer();
-                const uint8Array = new Uint8Array(arrayBuffer);
-                
-                return { data: uint8Array, originalDuration: video.duration, height: bestFile.height };
-            } catch (err) {
-                throw new Error(`Download error: ${err.message}`);
-            }
-        }
+      <footer class="footer">
+        <p>
+          Made with &hearts; by
+          <a href="https://github.com/FujiwaraChoki" target="_blank"
+            >Fuji Codes</a
+          >
+        </p>
+      </footer>
+    </main>
 
-        async function processSegment(index) {
-            const segment = segments[index];
-            
-            try {
-                updateSegmentStatus(index, 'searching');
-                
-                // Cari video
-                const video = await searchVideo(segment.query);
-                if (!video) {
-                    throw new Error('Tidak ada video ditemukan untuk query ini');
-                }
-                
-                updateSegmentStatus(index, 'downloading');
-                
-                // Download video
-                const { data, originalDuration, height } = await downloadVideo(video, segment.duration);
-                
-                updateSegmentStatus(index, 'processing');
-                
-                // Inisialisasi FFmpeg jika belum
-                await initFFmpeg();
-                
-                // Tulis file ke FFmpeg
-                const inputName = `input_${index}.mp4`;
-                await ffmpeg.writeFile(inputName, data);
-                
-                // Hitung waktu potong
-                let startTime = 0;
-                let endTime = segment.duration;
-                
-                // Jika video asli lebih panjang dari yang dibutuhkan, potong
-                if (originalDuration > segment.duration) {
-                    // Ambil dari tengah-tengah video untuk variasi
-                    startTime = Math.floor(Math.random() * (originalDuration - segment.duration));
-                    endTime = startTime + segment.duration;
-                }
-                
-                // Proses video dengan FFmpeg
-                const outputName = `output_${index}.mp4`;
-                
-                const ffmpegCommand = [
-                    '-i', inputName,
-                    '-ss', startTime.toString(),
-                    '-t', segment.duration.toString(),
-                    '-c:v', 'libx264',
-                    '-c:a', 'aac',
-                    '-preset', 'ultrafast',
-                    '-vf', `scale=-2:${Math.min(height, 1080)}`,
-                    '-y',
-                    outputName
-                ];
-                
-                await ffmpeg.exec(ffmpegCommand);
-                
-                // Baca hasil
-                const outputData = await ffmpeg.readFile(outputName);
-                segment.videoFile = outputData;
-                segment.videoUrl = URL.createObjectURL(new Blob([outputData.buffer], { type: 'video/mp4' }));
-                
-                // Cleanup
-                await ffmpeg.deleteFile(inputName);
-                await ffmpeg.deleteFile(outputName);
-                
-                updateSegmentStatus(index, 'ready');
-                log(`Segment ${segment.num} siap (${segment.duration}s)`, 'success');
-                
-                return true;
-                
-            } catch (err) {
-                log(`Error segment ${segment.num}: ${err.message}`, 'error');
-                updateSegmentStatus(index, 'error', err.message);
-                return false;
-            }
-        }
-
-        async function concatenateVideos() {
-            log('Menggabungkan semua video...', 'info');
-            
-            const readySegments = segments.filter(s => s.status === 'ready');
-            
-            if (readySegments.length === 0) {
-                throw new Error('Tidak ada segmen yang siap!');
-            }
-            
-            // Buat file list untuk FFmpeg
-            let concatList = '';
-            
-            for (let i = 0; i < readySegments.length; i++) {
-                const segment = readySegments[i];
-                const inputName = `concat_input_${i}.mp4`;
-                await ffmpeg.writeFile(inputName, segment.videoFile);
-                concatList += `file '${inputName}'\n`;
-            }
-            
-            await ffmpeg.writeFile('concat.txt', concatList);
-            
-            // Concatenate semua video
-            await ffmpeg.exec([
-                '-f', 'concat',
-                '-safe', '0',
-                '-i', 'concat.txt',
-                '-c', 'copy',
-                '-y',
-                'final_output.mp4'
-            ]);
-            
-            // Baca hasil
-            const finalData = await ffmpeg.readFile('final_output.mp4');
-            
-            // Cleanup
-            for (let i = 0; i < readySegments.length; i++) {
-                await ffmpeg.deleteFile(`concat_input_${i}.mp4`);
-            }
-            await ffmpeg.deleteFile('concat.txt');
-            await ffmpeg.deleteFile('final_output.mp4');
-            
-            return finalData;
-        }
-
-        async function startGeneration() {
-            if (!apiKey) {
-                alert('Masukkan Pexels API Key terlebih dahulu!');
-                return;
-            }
-            
-            if (isProcessing) {
-                alert('Proses sedang berjalan!');
-                return;
-            }
-            
-            isProcessing = true;
-            log('Memulai proses generation video...', 'info');
-            
-            // Reset semua status
-            segments.forEach((_, i) => updateSegmentStatus(i, 'pending'));
-            
-            let successCount = 0;
-            let errorCount = 0;
-            
-            // Proses setiap segmen satu per satu
-            for (let i = 0; i < segments.length; i++) {
-                const success = await processSegment(i);
-                if (success) successCount++;
-                else errorCount++;
-                
-                // Update progress
-                const progress = ((i + 1) / segments.length) * 100;
-                document.getElementById('progressFill').style.width = progress + '%';
-                document.getElementById('progressText').textContent = `Memproses segmen ${i + 1}/${segments.length}`;
-            }
-            
-            log(`Selesai! Berhasil: ${successCount}, Gagal: ${errorCount}`, successCount > 0 ? 'success' : 'error');
-            
-            // Coba gabungkan jika ada yang berhasil
-            const readySegments = segments.filter(s => s.status === 'ready');
-            
-            if (readySegments.length > 0) {
-                try {
-                    const finalVideo = await concatenateVideos();
-                    
-                    // Tampilkan hasil
-                    const blob = new Blob([finalVideo.buffer], { type: 'video/mp4' });
-                    const url = URL.createObjectURL(blob);
-                    
-                    const videoEl = document.getElementById('outputVideo');
-                    videoEl.src = url;
-                    
-                    const downloadLink = document.getElementById('downloadLink');
-                    downloadLink.href = url;
-                    downloadLink.download = 'output_video.mp4';
-                    
-                    document.getElementById('videoPreview').style.display = 'block';
-                    
-                    log('Video berhasil digabungkan dan siap di-download!', 'success');
-                } catch (err) {
-                    log(`Error menggabungkan video: ${err.message}`, 'error');
-                }
-            } else {
-                log('Tidak ada segmen yang berhasil diproses!', 'error');
-            }
-            
-            isProcessing = false;
-        }
-
-        function resetAll() {
-            if (confirm('Apakah Anda yakin ingin reset semua?')) {
-                segments.forEach((_, i) => {
-                    segments[i].status = 'pending';
-                    segments[i].videoFile = null;
-                    segments[i].videoUrl = null;
-                    segments[i].error = null;
-                });
-                
-                document.getElementById('progressFill').style.width = '0%';
-                document.getElementById('progressText').textContent = 'Menunggu...';
-                document.getElementById('videoPreview').style.display = 'none';
-                document.getElementById('logContainer').innerHTML = '';
-                
-                renderSegments();
-                updateStats();
-                
-                log('Reset selesai', 'info');
-            }
-        }
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            if (apiKey) {
-                document.getElementById('apiKey').value = apiKey;
-                document.getElementById('apiKeyStatus').textContent = '✓ Tersimpan';
-            }
-            parseData();
-            
-            // Check FFmpeg availability
-            setTimeout(() => {
-                if (typeof FFmpeg === 'undefined') {
-                    log('FFmpeg tidak terload - Periksa koneksi internet atau coba refresh halaman', 'error');
-                } else {
-                    log('FFmpeg library tersedia', 'success');
-                }
-            }, 1000);
-        });
-    </script>
-</body>
+    <div id="toastContainer" class="toast-container"></div>
+    <script src="app-shorts.js"></script>
+  </body>
 </html>
