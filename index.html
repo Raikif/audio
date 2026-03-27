@@ -350,8 +350,11 @@
                 
                 log(`Downloading: ${bestFile.link}`, 'info');
                 
-                const response = await fetch(bestFile.link);
-                if (!response.ok) throw new Error('Download failed');
+                // Menggunakan CORS proxy untuk melewati bloking Cross-Origin-Embedder-Policy (COEP) yang mem-block file dari CDN eksternal
+                const proxiedUrl = `https://corsproxy.io/?${encodeURIComponent(bestFile.link)}`;
+                const response = await fetch(proxiedUrl);
+                
+                if (!response.ok) throw new Error(`Download failed: ${response.status}`);
                 
                 const blob = await response.blob();
                 const arrayBuffer = await blob.arrayBuffer();
