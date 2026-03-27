@@ -6,6 +6,7 @@
     <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin">
     <meta http-equiv="Cross-Origin-Embedder-Policy" content="require-corp">
     <title>Video Generator - Pexels API</title>
+    <link rel="icon" href="data:,">
     <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/umd/ffmpeg.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -104,11 +105,12 @@
     </div>
 
     <script>
-        // Check if FFmpeg is loaded
-        console.log('FFmpeg loaded:', typeof FFmpeg);
-        
         // For version 0.11.x, access via window.FFmpeg
         const FFmpeg = window.FFmpeg;
+        
+        // Check if FFmpeg is loaded
+        console.log('FFmpeg loaded:', typeof FFmpeg);
+
         const fetchFile = async (file) => {
             if (file instanceof Blob || file instanceof File) {
                 return new Uint8Array(await file.arrayBuffer());
